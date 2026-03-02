@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 const ToDo = () => {
 
     const [inputValue, setInputValue] = useState("")
-    const [tasksList, setTasksList] = useState([{ "label": "task1", "id": 1 }, { "label": "task2", "id": 2 }, { "label": "task3", "id": 3 }])
+    const [tasksList, setTasksList] = useState([])
 
     const handleInput = e => {
         e.preventDefault();
@@ -12,6 +12,7 @@ const ToDo = () => {
 
     function handleSubmit(e) {
         e.preventDefault();
+        setInputValue("")
         fetch('https://playground.4geeks.com/todo/todos/MatOtS', {
             method: "POST",
             body: JSON.stringify({
@@ -131,7 +132,8 @@ const ToDo = () => {
                 </div>
             </div>
             <div className="mt-3">
-                <button onClick={deleteAllTask} type="button" className="btn btn-danger" aria-label="Delete">Delete all tasks</button>
+                <button onClick={deleteAllTask} type="button" className="btn btn-danger
+                " aria-label="Delete">Delete all tasks</button>
             </div>
         </div>
     )
