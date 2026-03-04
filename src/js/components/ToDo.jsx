@@ -58,7 +58,6 @@ const ToDo = () => {
                     })
             }
         }
-
     }
 
     function getUserTasks() {
@@ -70,6 +69,28 @@ const ToDo = () => {
             .then(resp => {
                 console.log(resp.ok);
                 console.log(resp.status);
+                if (resp.status === 404) {
+                    console.log("User not FOUND") 
+                    fetch('https://playground.4geeks.com/todo/users/MatOtS', {
+                        method: "POST",
+                        body: JSON.stringify({
+                            "label": inputValue,
+                            "id": false
+                        }),
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    })
+                        .then(resp => {
+                            console.log(resp.ok);
+                            console.log(resp.status);
+                            getUserTasks()
+                            return resp.json();
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        })
+                }
                 return resp.json();
             })
             .then(data => {
@@ -102,7 +123,6 @@ const ToDo = () => {
                     console.log(error);
                 })
         }
-
     }
 
 
@@ -116,7 +136,7 @@ const ToDo = () => {
         <div className="container mx-auto">
             <div>
                 <h1 className="mt-2 text-center" style={{ color: "darksalmon" }}>ToDo's</h1>
-                <div className="paper position-relative"> 
+                <div className="paper position-relative">
                     <ul className="list-group">
                         <input value={inputValue} onChange={handleInput} onKeyDown={(e) => { e.key === "Enter" ? handleSubmit(e) : "" }} type="text" className="form-control" id="task" aria-describedby="task" />
                         {tasksList.map((task) => {
@@ -128,7 +148,7 @@ const ToDo = () => {
                             )
                         })}
                     </ul>
-                    <small className="position-absolute" style={{"bottom": "3px","left": "10px", "color": "grey" }}>{tasksList.length} tasks lefts</small>
+                    <small className="position-absolute" style={{ "bottom": "3px", "left": "10px", "color": "grey" }}>{tasksList.length} tasks lefts</small>
                 </div>
             </div>
             <div className="mt-3">
