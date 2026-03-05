@@ -13,7 +13,7 @@ import Home from './components/Home';
 import ToDo from './components/ToDo';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  
     <ToDo/>
-  </React.StrictMode>,
+  
 )

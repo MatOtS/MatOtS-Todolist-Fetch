@@ -5,6 +5,7 @@ const ToDo = () => {
     const [inputValue, setInputValue] = useState("")
     const [tasksList, setTasksList] = useState([])
 
+
     const handleInput = e => {
         e.preventDefault();
         setInputValue(e.target.value)
@@ -24,8 +25,8 @@ const ToDo = () => {
             }
         })
             .then(resp => {
-                console.log(resp.ok);
-                console.log(resp.status);
+                console.log("Task creation: ",resp.ok);
+                console.log("Task creation: ",resp.status);
                 getUserTasks()
                 return resp.json();
             })
@@ -34,12 +35,12 @@ const ToDo = () => {
             })
     }
 
-    const deleteTask = (e) => {
-        const name = e.target.parentNode.getAttribute("name")
+    const deleteTask = (id) => {
+        //const name = e.target.parentNode.getAttribute("name")
         console.log(tasksList);
         console.log(name);
         for (let i = 0; i < tasksList.length; i++) {
-            if (tasksList[i].label === name) {
+            if (tasksList[i].id === id) {
                 console.log("task Id ", tasksList[i].id)
                 fetch(`https://playground.4geeks.com/todo/todos/${tasksList[i].id}`, {
                     method: "DELETE",
@@ -48,8 +49,8 @@ const ToDo = () => {
                     }
                 })
                     .then(resp => {
-                        console.log(resp.ok);
-                        console.log(resp.status);
+                        console.log("Delete request: ",resp.ok);
+                        console.log("Delete request: ",resp.status);
                         getUserTasks()
                         return resp.json();
                     })
@@ -62,39 +63,34 @@ const ToDo = () => {
 
     function getUserTasks() {
         fetch('https://playground.4geeks.com/todo/users/MatOtS', {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             }
         })
             .then(resp => {
-                console.log(resp.ok);
-                console.log(resp.status);
-                if (resp.status === 404) {
-                    console.log("User not FOUND") 
+                console.log("Create user request: ",resp.ok);
+                console.log("Create user request: ",resp.status);
+                if (resp.status === 201 || resp.status === 400) {
                     fetch('https://playground.4geeks.com/todo/users/MatOtS', {
-                        method: "POST",
-                        body: JSON.stringify({
-                            "label": inputValue,
-                            "id": false
-                        }),
                         headers: {
                             "Content-Type": "application/json"
                         }
                     })
                         .then(resp => {
-                            console.log(resp.ok);
-                            console.log(resp.status);
-                            getUserTasks()
+                            console.log("Get user info: ",resp.ok);
+                            console.log("Get user info: ",resp.status);
                             return resp.json();
+                        })
+                        .then(data => {
+                            console.log(data.todos);
+                            setTasksList(data.todos)
                         })
                         .catch(error => {
                             console.log(error);
                         })
                 }
                 return resp.json();
-            })
-            .then(data => {
-                setTasksList(data.todos)
             })
             .catch(error => {
                 console.log(error);
@@ -143,7 +139,7 @@ const ToDo = () => {
                             return (
                                 <li className="list-group-item" key={task.id} name={task.label}>
                                     {task.label}
-                                    <button onClick={deleteTask} type="button" className="btn-close float-end" aria-label="Close"></button>
+                                    <button onClick={() =>deleteTask(task.id)} type="button" className="btn-close float-end" aria-label="Close"></button>
                                 </li>
                             )
                         })}
